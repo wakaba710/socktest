@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+
+    <input type="button" id="sample" value="送信">
+    <input type="button" id="reset" value="リセット">
+    <p id="test">0</p>
+
+    <script>
+        var div = document.getElementById("test");
+
+
+
+        var sock = new WebSocket('ws://127.0.0.1:5001');
+
+        // 接続
+        sock.addEventListener('open',function(e){
+            console.log('Socket 接続成功');
+        });
+
+        // サーバーからデータを受け取る
+        sock.addEventListener('message',function(e){
+            console.log(e.data);
+            if(!isNaN(e.data)){
+                div.innerHTML = '<p>' + e.data +'</p>';
+            }
+            
+            if (Number(e.data)>10){
+                alert('ippon!!');
+            }
+
+        });
+
+        document.addEventListener('DOMContentLoaded',function(e){
+            // サーバーにデータを送る
+            document.getElementById('sample').addEventListener('click',function(e){
+                sock.send('hello');
+            });
+
+            document.getElementById('reset').addEventListener('click',function(e){
+                sock.send('reset');
+            });
+        });
+    </script>
+</body>
+</html>
